@@ -1,6 +1,6 @@
-import { where } from "sequelize";
 import Berita from "../models/BeritaModel.js";
 import path from "path";
+import fs from "fs";
 
 export const getBerita = async (req, res) => {
   try {
@@ -84,7 +84,7 @@ export const updateBerita = async (req, res) => {
     const file = req.files.file;
     const fileSize = file.data.length;
     const ext = path.extname(file.name).toLowerCase();
-    const fileName = file.md5 + ext;
+    fileName = file.md5 + ext;
     const allowedType = [".png", ".jpg", ".jpeg"];
 
     if (!allowedType.includes(ext)) {
@@ -100,24 +100,34 @@ export const updateBerita = async (req, res) => {
 
     const imagePath = `./public/images/${fileName}`;
     file.mv(imagePath, (err) => {
-      if (err) return res.status(500).json({ msg: err.message });
+      if (err) {
+        console.log("Error saving file:", err);
+        return res.status(500).json({ msg: err.message });
+      } else {
+        console.log("File berhasil disimpan:", imagePath);
+      }
     });
   }
 
-  const tanggalObjek = new Date(tanggal);
   const { judul, isi, tanggal } = req.body;
+  const tanggalObjek = new Date(tanggal);
+  if (isNaN(tanggalObjek)) {
+    return res.status(400).json({ msg: "Format tanggal tidak valid" });
+  }
   try {
-    await Berita.update({
-      judul: judul,
-      isi: isi,
-      gambar: fileName,
-      tanggal: tanggalObjek,
-    }),
+    await Berita.update(
+      {
+        judul: judul,
+        isi: isi,
+        gambar: fileName,
+        tanggal: tanggalObjek,
+      },
       {
         where: {
           id: req.params.id,
         },
-      };
+      }
+    );
     res.status(200).json({ msg: "Berita berhasil diupdate" });
   } catch (error) {
     console.log(error.message);

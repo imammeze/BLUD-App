@@ -12,7 +12,7 @@ const router = express.Router();
 router.get("/berita", getBerita);
 router.get("/berita/:id", getBeritaById);
 router.post("/berita", createBerita);
-router.put("/berita/:id", updateBerita);
+router.patch("/berita/:id", updateBerita);
 router.delete("/berita/:id", deleteBerita);
 
 export default router;

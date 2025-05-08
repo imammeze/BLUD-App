@@ -1,4 +1,4 @@
-import Jadwal from "../models/JadwalModel";
+import Jadwal from "../models/JadwalModel.js";
 
 export const getJadwal = async (req, res) => {
   try {
@@ -59,11 +59,18 @@ export const updateJadwal = async (req, res) => {
   }
 
   try {
-    Jadwal.update({
-      name,
-      name_event,
-      tanggal: tanggalObjek,
-    });
+    Jadwal.update(
+      {
+        name,
+        name_event,
+        tanggal: tanggalObjek,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
     res.status(201).json({ msg: "Jadwal berhasil diubah" });
   } catch (error) {
     console.error(error.message);

@@ -12,7 +12,7 @@ const router = express.Router();
 router.get("/wisata", getWisata);
 router.get("/wisata/:id", getWisataById);
 router.post("/wisata", createWisata);
-router.put("/wisata/:id", updateWisata);
+router.patch("/wisata/:id", updateWisata);
 router.delete("/wisata/:id", deleteWisata);
 
 export default router;
